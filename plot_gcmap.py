@@ -4,14 +4,13 @@
 import argparse
 import logging
 from pathlib import Path
-from typing import Optional
 
 import pandas as pd
 import yaml
 from gcmap import GCMapper, Gradient
 
 
-def load_config(config_path: Optional[Path] = None) -> dict:
+def load_config(config_path: Path | None = None) -> dict:
     """Load configuration from YAML file.
     
     Args:

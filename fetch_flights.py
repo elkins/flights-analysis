@@ -19,16 +19,16 @@ Usage:
     python fetch_flights.py -o flights.csv --min-flights 5
 """
 
-from typing import Optional, Dict, List, Tuple, Iterator
-from dataclasses import dataclass, asdict
-from datetime import datetime, timedelta
-from pathlib import Path
 import argparse
-import logging
 import csv
+import logging
+import math
 import sys
 from collections import defaultdict
-import math
+from collections.abc import Iterator
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
 
 try:
     import requests
@@ -66,7 +66,7 @@ class ADSBExchangeFetcher:
     # Public API endpoint (no key required, but rate limited)
     BASE_URL = "https://globe.adsbexchange.com/data/aircraft.json"
     
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, api_key: str | None = None):
         """
         Initialize ADS-B Exchange fetcher.
         
@@ -79,7 +79,7 @@ class ADSBExchangeFetcher:
             'User-Agent': 'FlightsAnalysis/1.0'
         })
     
-    def fetch_current_flights(self) -> List[Dict]:
+    def fetch_current_flights(self) -> list[dict]:
         """
         Fetch all currently tracked flights.
         
@@ -103,11 +103,11 @@ class ADSBExchangeFetcher:
     
     def parse_flights(
         self,
-        aircraft_data: List[Dict],
-        bounds: Optional[Tuple[float, float, float, float]] = None,
-        center: Optional[Tuple[float, float]] = None,
-        radius_km: Optional[float] = None
-    ) -> Iterator[Dict]:
+        aircraft_data: list[dict],
+        bounds: tuple[float, float, float, float] | None = None,
+        center: tuple[float, float] | None = None,
+        radius_km: float | None = None
+    ) -> Iterator[dict]:
         """
         Parse and filter flight data.
         
@@ -164,7 +164,7 @@ class ADSBExchangeFetcher:
             }
     
     @staticmethod
-    def _calculate_distance(coord1: Tuple[float, float], coord2: Tuple[float, float]) -> float:
+    def _calculate_distance(coord1: tuple[float, float], coord2: tuple[float, float]) -> float:
         """
         Calculate great circle distance between two coordinates (Haversine formula).
         
@@ -205,9 +205,9 @@ class RouteAggregator:
         """
         self.min_flights = min_flights
         self.grid_resolution = grid_resolution
-        self.routes: Dict[Tuple[Tuple[float, float], Tuple[float, float]], int] = defaultdict(int)
+        self.routes: dict[tuple[tuple[float, float], tuple[float, float]], int] = defaultdict(int)
     
-    def add_flight(self, lat: float, lon: float, track: Optional[float], speed: Optional[float]):
+    def add_flight(self, lat: float, lon: float, track: float | None, speed: float | None):
         """
         Add a flight observation to route aggregation.
         
@@ -243,7 +243,7 @@ class RouteAggregator:
             
             self.routes[(dep_point, arr_point)] += 1
     
-    def get_routes(self) -> List[FlightRoute]:
+    def get_routes(self) -> list[FlightRoute]:
         """
         Get aggregated routes meeting minimum flight threshold.
         
@@ -268,7 +268,7 @@ class RouteAggregator:
         return routes
 
 
-def save_to_csv(routes: List[FlightRoute], output_path: Path) -> None:
+def save_to_csv(routes: list[FlightRoute], output_path: Path) -> None:
     """
     Save routes to CSV file in flights-analysis format.
     

@@ -8,18 +8,17 @@ Basemap has been deprecated, so this version uses Cartopy instead.
 import argparse
 import logging
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal
 
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 import yaml
 from matplotlib.colors import LinearSegmentedColormap, PowerNorm
 
 
-def load_config(config_path: Optional[Path] = None) -> dict:
+def load_config(config_path: Path | None = None) -> dict:
     """Load configuration from YAML file.
     
     Args:
@@ -50,8 +49,8 @@ def plot_map(
     in_filename: str | Path,
     out_filename: str | Path,
     config: dict,
-    color_mode: Optional[Literal['screen', 'print']] = None,
-    absolute: Optional[bool] = None
+    color_mode: Literal['screen', 'print'] | None = None,
+    absolute: bool | None = None
 ) -> None:
     """Plot flight routes on a world map and save as PNG.
 
@@ -121,7 +120,7 @@ def plot_map(
     
     # Create figure with Cartopy projection
     logger.info("Creating map...")
-    fig = plt.figure(figsize=(width, height))
+    plt.figure(figsize=(width, height))
     ax = plt.axes(projection=ccrs.Miller())
     
     # Set map extent (global view)
@@ -235,7 +234,9 @@ def main() -> None:
     if args.output:
         output_file = args.output
     else:
-        output_file = Path(config.get('output', {}).get('matplotlib_filename', 'flights_map_mpl.png'))
+        output_file = Path(
+            config.get('output', {}).get('matplotlib_filename', 'flights_map_mpl.png')
+        )
         if not output_file.is_absolute():
             output_file = Path(__file__).parent / output_file
     

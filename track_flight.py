@@ -20,16 +20,15 @@ Usage:
     python track_flight.py UA262 --plot
 """
 
-from typing import Optional, List, Dict, Any, Tuple
-from dataclasses import dataclass, asdict
-from datetime import datetime, timedelta
-from pathlib import Path
 import argparse
-import logging
 import csv
+import logging
 import sys
 import time
-import json
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Any
 
 try:
     import requests
@@ -53,14 +52,14 @@ class FlightPosition:
     callsign: str
     lat: float
     lon: float
-    altitude: Optional[float] = None  # meters
-    speed: Optional[float] = None  # m/s
-    track: Optional[float] = None  # degrees
-    vert_rate: Optional[float] = None  # m/s
-    registration: Optional[str] = None
-    aircraft_type: Optional[str] = None
-    origin: Optional[str] = None
-    destination: Optional[str] = None
+    altitude: float | None = None  # meters
+    speed: float | None = None  # m/s
+    track: float | None = None  # degrees
+    vert_rate: float | None = None  # m/s
+    registration: str | None = None
+    aircraft_type: str | None = None
+    origin: str | None = None
+    destination: str | None = None
 
 
 class FlightTracker:
@@ -73,16 +72,16 @@ class FlightTracker:
     CONV_KT_TO_MPS = 0.514444444
     CONV_FPM_TO_MPS = 5.08e-3
     
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, api_key: str | None = None):
         """Initialize flight tracker."""
         self.api_key = api_key
         self.session = requests.Session()
         self.session.headers.update({
             'User-Agent': 'FlightTracker/1.0'
         })
-        self.flight_history: List[FlightPosition] = []
+        self.flight_history: list[FlightPosition] = []
     
-    def normalize_callsign(self, callsign: str) -> List[str]:
+    def normalize_callsign(self, callsign: str) -> list[str]:
         """
         Generate possible callsign variations.
         
@@ -125,7 +124,7 @@ class FlightTracker:
         
         return variations
     
-    def find_flight(self, callsign: str) -> Optional[FlightPosition]:
+    def find_flight(self, callsign: str) -> FlightPosition | None:
         """
         Find a specific flight by callsign in current data.
         
@@ -163,7 +162,9 @@ class FlightTracker:
             ]
             
             if similar:
-                logger.info(f"Flight not found. Similar callsigns currently tracked: {similar[:10]}")
+                logger.info(
+                    f"Flight not found. Similar callsigns currently tracked: {similar[:10]}"
+                )
             
             return None
             
@@ -171,7 +172,7 @@ class FlightTracker:
             logger.error(f"Failed to fetch flight data: {e}")
             return None
     
-    def _parse_aircraft(self, aircraft: Dict[str, Any]) -> Optional[FlightPosition]:
+    def _parse_aircraft(self, aircraft: dict[str, Any]) -> FlightPosition | None:
         """Parse aircraft data into FlightPosition."""
         # Parse position
         lat = aircraft.get('lat')
@@ -221,8 +222,8 @@ class FlightTracker:
         self,
         callsign: str,
         interval_seconds: int = 30,
-        max_updates: Optional[int] = None
-    ) -> List[FlightPosition]:
+        max_updates: int | None = None
+    ) -> list[FlightPosition]:
         """
         Track a flight continuously with periodic updates.
         
@@ -334,7 +335,7 @@ class FlightTracker:
         
         logger.info(f"Saved to {output_path}")
     
-    def plot_flight_path(self, output_path: Optional[Path] = None) -> None:
+    def plot_flight_path(self, output_path: Path | None = None) -> None:
         """Plot the flight path on a map."""
         if not self.flight_history:
             logger.warning("No flight history to plot")

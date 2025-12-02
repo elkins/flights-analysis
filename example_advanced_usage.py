@@ -14,7 +14,6 @@ from typing import Literal
 import yaml
 
 # Import the plotting functions
-from plot_gcmap import generate_map as generate_gcmap
 from plot_mpl import plot_map
 
 

@@ -12,9 +12,9 @@ import sys
 from pathlib import Path
 
 try:
-    import pandas as pd
-    import matplotlib.pyplot as plt
     import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
+    import pandas as pd
 except ImportError as e:
     print(f"Error: Required library not found: {e}")
     print("Install with: pip install pandas matplotlib")
@@ -92,7 +92,10 @@ def plot_track(csv_file: Path, output_file: Path = None):
         ax4.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
         plt.setp(ax4.xaxis.get_majorticklabels(), rotation=45, ha='right')
     else:
-        ax4.text(0.5, 0.5, 'No vertical rate data', ha='center', va='center', transform=ax4.transAxes)
+        ax4.text(
+            0.5, 0.5, 'No vertical rate data',
+            ha='center', va='center', transform=ax4.transAxes
+        )
         ax4.set_title('Climb/Descent Rate', fontsize=12, fontweight='bold')
     
     # 5. Speed vs Altitude
@@ -103,7 +106,7 @@ def plot_track(csv_file: Path, output_file: Path = None):
     ax5.set_ylabel('Ground Speed (knots)', fontsize=11)
     ax5.set_title('Speed vs Altitude', fontsize=12, fontweight='bold')
     ax5.grid(True, alpha=0.3)
-    cbar = plt.colorbar(sc, ax=ax5, label='Time Progress')
+    plt.colorbar(sc, ax=ax5, label='Time Progress')
     
     # 6. Flight Statistics
     ax6 = plt.subplot(2, 3, 6)
@@ -117,7 +120,7 @@ def plot_track(csv_file: Path, output_file: Path = None):
     avg_speed = df['Velocity_kts'].mean()
     
     # Calculate distance
-    from math import radians, sin, cos, asin, sqrt
+    from math import asin, cos, radians, sin, sqrt
     total_dist = 0
     for i in range(len(df) - 1):
         lat1, lon1 = radians(df['Latitude'].iloc[i]), radians(df['Longitude'].iloc[i])
@@ -156,7 +159,7 @@ POSITION
     
     ax6.text(0.1, 0.95, stats_text, transform=ax6.transAxes, 
              fontsize=10, verticalalignment='top', family='monospace',
-             bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.3))
+             bbox={"boxstyle": 'round', "facecolor": 'wheat', "alpha": 0.3})
     
     plt.tight_layout()
     

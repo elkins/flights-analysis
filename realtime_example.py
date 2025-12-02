@@ -12,10 +12,10 @@ Usage:
     python realtime_example.py
 """
 
-from pathlib import Path
 import subprocess
 import sys
-from datetime import datetime
+from pathlib import Path
+
 
 def print_header(title: str) -> None:
     """Print a formatted section header."""
@@ -124,7 +124,7 @@ def main():
     print_header("Summary")
     
     print("✓ Successfully generated real-time flight visualization!")
-    print(f"\nOutput files:")
+    print("\nOutput files:")
     print(f"  Data:  {realtime_csv}")
     print(f"  Map:   {realtime_map}")
     

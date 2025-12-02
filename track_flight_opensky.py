@@ -16,15 +16,14 @@ Usage:
     python track_flight_opensky.py UA262 --follow --updates 20 -o ua262.csv --plot
 """
 
-from typing import Optional, List, Tuple
+import argparse
+import csv
+import logging
+import sys
+import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-import argparse
-import logging
-import csv
-import sys
-import time
 
 try:
     import requests
@@ -45,9 +44,9 @@ class FlightPosition:
     lat: float
     lon: float
     altitude: float  # meters (already in meters from OpenSky)
-    velocity: Optional[float]  # m/s
-    track: Optional[float]  # degrees
-    vert_rate: Optional[float]  # m/s
+    velocity: float | None  # m/s
+    track: float | None  # degrees
+    vert_rate: float | None  # m/s
     on_ground: bool = False
 
 
@@ -56,7 +55,7 @@ class OpenSkyTracker:
     
     BASE_URL = "https://opensky-network.org/api/states/all"
     
-    def __init__(self, username: Optional[str] = None, password: Optional[str] = None):
+    def __init__(self, username: str | None = None, password: str | None = None):
         """
         Initialize OpenSky tracker.
         
@@ -67,15 +66,17 @@ class OpenSkyTracker:
         self.session = requests.Session()
         if username and password:
             self.session.auth = (username, password)
-        self.flight_history: List[FlightPosition] = []
+        self.flight_history: list[FlightPosition] = []
     
-    def normalize_callsign(self, callsign: str) -> List[str]:
+    def normalize_callsign(self, callsign: str) -> list[str]:
         """Generate callsign variations."""
         callsign = callsign.upper().strip()
         variations = [callsign]
         
         if callsign.isdigit():
-            variations.extend([f"UA{callsign}", f"UAL{callsign}", f"UA {callsign}", f"UAL {callsign}"])
+            variations.extend([
+                f"UA{callsign}", f"UAL{callsign}", f"UA {callsign}", f"UAL {callsign}"
+            ])
         elif callsign.startswith('UA') and not callsign.startswith('UAL'):
             number = callsign[2:].strip()
             variations.extend([f"UAL{number}", f"UA {number}", f"UAL {number}"])
@@ -88,8 +89,8 @@ class OpenSkyTracker:
     def find_flight(
         self,
         callsign: str,
-        bounds: Optional[Tuple[float, float, float, float]] = None
-    ) -> Optional[FlightPosition]:
+        bounds: tuple[float, float, float, float] | None = None
+    ) -> FlightPosition | None:
         """
         Find flight by callsign.
         
@@ -145,7 +146,7 @@ class OpenSkyTracker:
             logger.error(f"Failed to fetch data: {e}")
             return None
     
-    def _parse_state(self, state: List, timestamp: float) -> FlightPosition:
+    def _parse_state(self, state: list, timestamp: float) -> FlightPosition:
         """
         Parse OpenSky state vector.
         
@@ -171,9 +172,9 @@ class OpenSkyTracker:
         self,
         callsign: str,
         interval_seconds: int = 30,
-        max_updates: Optional[int] = None,
-        bounds: Optional[Tuple[float, float, float, float]] = None
-    ) -> List[FlightPosition]:
+        max_updates: int | None = None,
+        bounds: tuple[float, float, float, float] | None = None
+    ) -> list[FlightPosition]:
         """Track flight continuously."""
         update_count = 0
         
@@ -217,7 +218,7 @@ class OpenSkyTracker:
             print(f"  {direction}Vert Rate: {pos.vert_rate * 196.85:+.0f} ft/min")
         
         if pos.on_ground:
-            print(f"  🛬 Status: On Ground")
+            print("  🛬 Status: On Ground")
         
         print()
     
@@ -254,7 +255,7 @@ class OpenSkyTracker:
         
         logger.info(f"Saved to {output_path}")
     
-    def plot_flight_path(self, output_path: Optional[Path] = None) -> None:
+    def plot_flight_path(self, output_path: Path | None = None) -> None:
         """Plot flight path."""
         if len(self.flight_history) < 2:
             logger.warning("Need at least 2 positions to plot")
@@ -313,8 +314,11 @@ Examples:
     parser.add_argument('--interval', type=int, default=30, help='Update interval (seconds)')
     parser.add_argument('--updates', type=int, help='Max updates')
     parser.add_argument('--plot', action='store_true', help='Plot the path')
-    parser.add_argument('--bounds', nargs=4, type=float, metavar=('LAMIN', 'LOMIN', 'LAMAX', 'LOMAX'),
-                       help='Geographic bounds to search')
+    parser.add_argument(
+        '--bounds', nargs=4, type=float,
+        metavar=('LAMIN', 'LOMIN', 'LAMAX', 'LOMAX'),
+        help='Geographic bounds to search'
+    )
     parser.add_argument('--username', help='OpenSky username (for higher limits)')
     parser.add_argument('--password', help='OpenSky password')
     parser.add_argument('-v', '--verbose', action='store_true', help='Verbose logging')

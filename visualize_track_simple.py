@@ -8,15 +8,15 @@ Usage:
 """
 
 import argparse
-import sys
 import csv
-from pathlib import Path
+import sys
 from datetime import datetime
-from math import radians, sin, cos, asin, sqrt
+from math import asin, cos, radians, sin, sqrt
+from pathlib import Path
 
 try:
-    import matplotlib.pyplot as plt
     import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
 except ImportError:
     print("Error: matplotlib not found. Install with: pip install matplotlib")
     sys.exit(1)
@@ -37,7 +37,7 @@ def plot_track(csv_file: Path, output_file=None):
         'VertRate_fpm': []
     }
     
-    with open(csv_file, 'r') as f:
+    with open(csv_file) as f:
         reader = csv.DictReader(f)
         for row in reader:
             data['Timestamp'].append(datetime.fromisoformat(row['Timestamp']))
@@ -101,7 +101,10 @@ def plot_track(csv_file: Path, output_file=None):
         ax4.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
         plt.setp(ax4.xaxis.get_majorticklabels(), rotation=45, ha='right')
     else:
-        ax4.text(0.5, 0.5, 'No vertical rate data', ha='center', va='center', transform=ax4.transAxes)
+        ax4.text(
+            0.5, 0.5, 'No vertical rate data',
+            ha='center', va='center', transform=ax4.transAxes
+        )
         ax4.set_title('Climb/Descent Rate', fontsize=12, fontweight='bold')
     
     # 5. Speed vs Altitude
@@ -166,7 +169,7 @@ POSITION
     
     ax6.text(0.05, 0.95, stats_text, transform=ax6.transAxes, 
              fontsize=9, verticalalignment='top', family='monospace',
-             bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.3))
+             bbox={"boxstyle": 'round', "facecolor": 'wheat', "alpha": 0.3})
     
     plt.tight_layout()
     
@@ -174,7 +177,7 @@ POSITION
     if output_file:
         plt.savefig(output_file, dpi=150, bbox_inches='tight')
         print(f"✅ Visualization saved to: {output_file}")
-        print(f"\n📊 Quick Stats:")
+        print("\n📊 Quick Stats:")
         print(f"   Duration: {duration:.1f} min")
         print(f"   Altitude: {data['Altitude_ft'][0]:,.0f} → {data['Altitude_ft'][-1]:,.0f} ft")
         print(f"   Distance: {total_dist:.1f} km ({total_dist * 0.539957:.1f} nm)")
