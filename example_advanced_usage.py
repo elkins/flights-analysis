@@ -19,11 +19,11 @@ from plot_mpl import plot_map
 
 def create_custom_config(output_name: str, color_mode: str = "screen") -> dict:
     """Create a custom configuration dictionary.
-    
+
     Args:
         output_name: Base name for output files
         color_mode: Color scheme to use
-        
+
     Returns:
         Configuration dictionary
     """
@@ -55,9 +55,9 @@ def batch_generate_maps():
     # Create output directory
     output_dir = Path(__file__).parent / "outputs"
     output_dir.mkdir(exist_ok=True)
-    
+
     data_file = Path(__file__).parent / "data.csv"
-    
+
     # Define configurations
     configs: list[tuple[str, Literal["screen", "print"], bool]] = [
         ("screen_normal", "screen", False),
@@ -65,30 +65,24 @@ def batch_generate_maps():
         ("print_normal", "print", False),
         ("print_absolute", "print", True),
     ]
-    
+
     print("Generating multiple map variants...")
     print("=" * 60)
-    
+
     for name, color_mode, absolute in configs:
         print(f"\nGenerating {name} variant...")
-        
+
         # Create config
         config = create_custom_config(name, color_mode)
-        
+
         # Update paths
         output_file = output_dir / f"{name}_mpl.png"
-        
+
         # Generate map
-        plot_map(
-            data_file,
-            output_file,
-            config,
-            color_mode=color_mode,
-            absolute=absolute
-        )
-        
+        plot_map(data_file, output_file, config, color_mode=color_mode, absolute=absolute)
+
         print(f"  ✓ Saved to {output_file}")
-    
+
     print("\n" + "=" * 60)
     print(f"All maps generated successfully in {output_dir}")
 
@@ -128,12 +122,12 @@ def save_custom_config_example():
             "level": "DEBUG",
         },
     }
-    
+
     output_file = Path(__file__).parent / "custom_config_example.yaml"
-    
+
     with open(output_file, "w") as f:
         yaml.dump(config, f, default_flow_style=False, sort_keys=False)
-    
+
     print(f"Custom configuration example saved to {output_file}")
 
 
@@ -141,15 +135,15 @@ def main():
     """Main demonstration function."""
     print("Flights Analysis - Advanced Usage Examples")
     print("=" * 60)
-    
+
     # Example 1: Save custom config
     print("\n1. Creating custom configuration file...")
     save_custom_config_example()
-    
+
     # Example 2: Batch generate maps
     print("\n2. Batch generating maps with different settings...")
     batch_generate_maps()
-    
+
     print("\n" + "=" * 60)
     print("Examples completed!")
     print("\nTo use the custom config:")
