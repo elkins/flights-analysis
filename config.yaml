@@ -1,0 +1,88 @@
+# Flights Analysis Configuration
+
+# Output settings
+output:
+  # Directory for generated visualizations
+  directory: "."
+  # Default output format
+  format: "png"
+  # DPI for output images
+  dpi: 150
+  # Default filenames
+  gcmap_filename: "flights_map_gcmap.png"
+  matplotlib_filename: "flights_map_mpl.png"
+
+# Data settings
+data:
+  # Path to CSV data file
+  filepath: "data.csv"
+  # CSV separator
+  separator: ";"
+  # Column names
+  columns:
+    - "dep_lat"
+    - "dep_lon"
+    - "arr_lat"
+    - "arr_lon"
+    - "nb_flights"
+    - "CO2"
+
+# Visualization settings
+visualization:
+  # Color mode: 'screen' or 'print'
+  color_mode: "screen"
+  
+  # Use absolute scaling for colors (based on flight count values)
+  absolute_scaling: false
+  
+  # Figure size (width, height) in inches
+  figure_size:
+    width: 27
+    height: 20
+  
+  # Route line width
+  line_width: 0.5
+  
+  # Route transparency (0.0-1.0)
+  alpha: 0.8
+
+# GCMapper settings
+gcmap:
+  # Map dimensions
+  height: 2000
+  width: 4000
+  
+  # Color gradient (R, G, B, A) values 0-255
+  gradient:
+    - position: 0.0
+      color: [0, 0, 0, 0]
+    - position: 0.5
+      color: [204, 0, 153, 0.6]
+    - position: 1.0
+      color: [255, 204, 230, 1.0]
+
+# Matplotlib color schemes
+color_schemes:
+  screen:
+    background: [0.0, 0.0, 0.0, 1.0]
+    coastline: [0.8, 0.0, 0.6, 0.7]
+    gradient:
+      - [0.0, 0.0, 0.0, 0.0]
+      - [0.8, 0.0, 0.6, 0.6]
+      - [1.0, 0.8, 0.9, 1.0]
+  
+  print:
+    background: [1.0, 1.0, 1.0, 1.0]
+    coastline: [0.04, 0.04, 0.04, 0.8]
+    gradient:
+      - [1.0, 1.0, 1.0, 0.0]
+      - [1.0, 0.8, 0.9, 1.0]
+      - [0.8, 0.0, 0.6, 0.6]
+
+# Power normalization gamma for color scaling
+power_norm_gamma: 0.3
+
+# Logging settings
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"

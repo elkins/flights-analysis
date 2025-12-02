@@ -1,0 +1,71 @@
+[project]
+name = "flights-analysis"
+version = "2.0.0"
+description = "Flight data visualization with Pandas and Matplotlib/Cartopy"
+authors = [
+    {name = "Hugo Larcher"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+keywords = ["aviation", "visualization", "flight-routes", "cartography"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "pandas>=2.0.0",
+    "matplotlib>=3.7.0",
+    "cartopy>=0.22.0",
+    "numpy>=1.24.0",
+    "Pillow>=10.0.0",
+    "gcmap>=0.0.3",
+    "PyYAML>=6.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+]
+notebook = [
+    "jupyter>=1.0.0",
+    "ipykernel>=6.0.0",
+    "ipywidgets>=8.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Hugoch/flights-analysis"
+Repository = "https://github.com/Hugoch/flights-analysis"
+
+[project.scripts]
+flights-gcmap = "plot_gcmap:main"
+flights-mpl = "plot_mpl:main"
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 100
+target-version = ['py310', 'py311', 'py312']
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E", "F", "I", "N", "UP", "B", "A", "C4", "PT"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false

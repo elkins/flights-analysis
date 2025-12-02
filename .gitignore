@@ -1,14 +1,9 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
-
-# Distribution / packaging
 .Python
-env/
 build/
 develop-eggs/
 dist/
@@ -20,37 +15,82 @@ lib64/
 parts/
 sdist/
 var/
+wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
 
-# Unit test / coverage reports
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Output files
+*.png
+!flights_map_*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Real-time data (generated files)
+realtime*.csv
+snapshots/
+*_snapshot*.csv
+test.csv
+debug.csv
+
+# Flight tracking data (but keep examples)
+*_track.csv
+!example_*_track.csv
+*_analysis.png
+temp_flight_path.csv
+
+# Testing
+.pytest_cache/
+.coverage
 htmlcov/
 .tox/
-.coverage
-.coverage.*
-.cache
 nosetests.xml
 coverage.xml
 *,cover
 .hypothesis/
 
+# Mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ruff
+.ruff_cache/
+
+# Environment variables
+.env
+.env.local
+
+# Logs
+*.log
+pip-log.txt
+pip-delete-this-directory.txt
+
 # Translations
 *.mo
 *.pot
 
-# Django stuff:
-*.log
+# PyInstaller
+*.manifest
+*.spec
 
 # Sphinx documentation
 docs/_build/
@@ -58,5 +98,3 @@ docs/_build/
 # PyBuilder
 target/
 
-#iPython
-.ipynb*

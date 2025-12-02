@@ -1,0 +1,11 @@
+# Core dependencies for flights-analysis
+pandas>=2.0.0
+matplotlib>=3.7.0
+cartopy>=0.22.0
+numpy>=1.24.0
+Pillow>=10.0.0
+gcmap>=0.0.3
+PyYAML>=6.0.0
+
+# ADS-B Exchange integration (optional)
+requests>=2.31.0
